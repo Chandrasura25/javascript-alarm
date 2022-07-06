@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section>
+    <div class="wrapper">
+      <div class="clock">
+        <div class="hour">
+            <div class="hr" id="hr"></div>
+        </div>
+        <div class="min">
+            <div class="mn" id="mn"></div>
+        </div>
+        <div class="sec">
+            <div class="sc" id="sc"></div>
+        </div>
+    </div>
+    <script>
+        const deg = 6;
+        const hr = document.querySelector("#hr");
+        const mn = document.querySelector("#mn");
+        const sc = document.querySelector("#sc");
+        setInterval(()=>{
+            let day = new Date;
+            let hh = day.getHours() * 30;
+            let mm = day.getMinutes() * deg;
+            let ss= day.getSeconds() * deg;
+            hr.style.transform = `rotateZ(${(hh)+(mm/12)}deg)`;
+            mn.style.transform= `rotateZ(${mm}deg)`;
+            sc.style.transform= `rotateZ(${ss}deg)`;
+        })
+    </script>
+        <h1>00:00:00 PM</h1>
+        <div class="content">
+            <div class="column">
+                <select name="" id="">
+                    <option value="Hour" selected hidden>Hour</option>
+                </select>
+            </div>
+            <div class="column">
+                <select name="" id="">
+                    <option value="Minutes" selected hidden>Minutes</option>
+                </select>
+            </div>
+            <div class="column">
+                <select name="" id="">
+                    <option value="AM/PM" selected hidden>AM/PM</option>
+                </select>
+            </div>
+        </div>
+        <button>Set Alarm</button>
+    </div>
+  </section>
+    <script>
+        const currentTime = document.querySelector('h1'), 
+              selectMenu = document.querySelectorAll('select'), 
+              setAlarmBtn = document.querySelector('button'),
+              content= document.querySelector('.content');
+
+        let alarmTime, isAlarmSet = false;
+        ringTone = new Audio('alarm.mp3')
+        for (let i = 12; i >0; i--) {
+           i=i <10 ? '0' + i:i   
+          let option =` <option value="${i}">${i}</option>` 
+          selectMenu[0].firstElementChild.insertAdjacentHTML('afterend',option)           
+        }
+        for (let i = 59; i >=0; i--) {
+           i=i <10 ? '0' + i:i   
+          let option =` <option value="${i}">${i}</option>` 
+          selectMenu[1].firstElementChild.insertAdjacentHTML('afterend',option)           
+        }
+        for (let i = 2; i >0; i--) {
+          let ampm = i == 1 ? 'AM' : 'PM'; 
+          let option =` <option value="${ampm}">${ampm}</option>` 
+          selectMenu[2].firstElementChild.insertAdjacentHTML('afterend',option)           
+        }
+        setInterval(()=>{
+      let h = new Date().getHours();
+      let m = new Date().getMinutes();
+      let s = new Date().getSeconds();
+       ampm = 'AM';
+      if(h > 12){
+        h = h-12;
+        ampm = 'PM';
+      }
+      h = (h<10)? '0' + h : h;
+      m = (m<10)? '0' + m : m;
+      s = (s<10)? '0' + s : s;
+     
+    currentTime.innerText=`${h}:${m}:${s} ${ampm}`;
+
+      if(alarmTime == `${h}:${m}:${ampm}`){
+        ringTone.play();
+        ringTone.loop=true;
+      }
+        },1000)
+
+      setAlarm=()=>{
+        if(isAlarmSet){
+          alarmTime='';
+          ringTone.pause();
+          content.classList.remove('disable');
+          setAlarmBtn.innerText="Set Alarm";
+          return isAlarmSet = false;
+        }
+        let time = `${selectMenu[0].value}:${selectMenu[1].value}:${selectMenu[2].value}`
+       if (time.includes('Hour')||time.includes('Minutes')||time.includes('AM//PM')) {
+         return alert("Please, select a valid time to set Alarm")
+       }
+       isAlarmSet= true;
+       alarmTime=time;
+       content.classList.add('disable')
+       setAlarmBtn.innerText="Clear Alarm"
+      }
+
+        setAlarmBtn.addEventListener('click',setAlarm)
+    </script>
+</body>
+</html>
